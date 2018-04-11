@@ -31,6 +31,15 @@ const Body = ({ children, title, style }) => (
 );
 
 class Sidebar extends PureComponent {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const nextState = {};
+    Object.keys(nextProps).forEach(key => {
+      if (nextProps[key] && prevState[key] !== undefined) {
+        nextState[key] = nextProps[key];
+      }
+    });
+    return nextState;
+  }
   constructor(props) {
     super(props);
     this.defaultstate = {
@@ -47,9 +56,7 @@ class Sidebar extends PureComponent {
     const propsState = this.propsToState(props);
     this.state = { ...this.defaultstate, ...propsState };
   }
-  componentWillReceiveProps(props) {
-    this.setState(this.propsToState(props));
-  }
+
   getLayOutSetting = () => {
     const { layout } = this.state;
     return [
@@ -90,16 +97,11 @@ class Sidebar extends PureComponent {
       {
         title: 'Fix Siderbar',
         isShow: layout === 'sidemenu',
-        action: [
-          <Switch
-            checked={!!this.state.fixSiderbar}
-            onChange={this.fixSiderbar}
-          />,
-        ],
+        action: [<Switch checked={!!this.state.fixSiderbar} onChange={this.fixSiderbar} />],
       },
     ].filter(item => item.isShow);
   };
-  fixSiderbar = (checked) => {
+  fixSiderbar = checked => {
     this.changeSetting('fixSiderbar', checked);
   };
   changeSetting = (key, value) => {
@@ -118,9 +120,9 @@ class Sidebar extends PureComponent {
       }
     });
   };
-  propsToState = (props) => {
+  propsToState = props => {
     const nextState = {};
-    Object.keys(props).forEach((key) => {
+    Object.keys(props).forEach(key => {
       if (props[key] && this.defaultstate[key] !== undefined) {
         nextState[key] = props[key];
       }
@@ -135,11 +137,7 @@ class Sidebar extends PureComponent {
       display: 'block',
     };
     return (
-      <div
-        className={`${styles.sidebar} ${
-          this.state.collapse ? styles.show : ''
-        }`}
-      >
+      <div className={`${styles.sidebar} ${this.state.collapse ? styles.show : ''}`}>
         <div className={styles.mini_bar} onClick={this.togglerContent}>
           <img
             alt="logo"
@@ -154,9 +152,7 @@ class Sidebar extends PureComponent {
             }}
           >
             <RadioGroup
-              onChange={({ target }) =>
-                this.changeSetting('silderTheme', target.value)
-              }
+              onChange={({ target }) => this.changeSetting('silderTheme', target.value)}
               value={this.state.silderTheme}
             >
               <Radio style={radioStyle} value="dark">
@@ -180,9 +176,7 @@ class Sidebar extends PureComponent {
             <List
               split={false}
               dataSource={this.getLayOutSetting()}
-              renderItem={item => (
-                <List.Item actions={item.action}>{item.title}</List.Item>
-              )}
+              renderItem={item => <List.Item actions={item.action}>{item.title}</List.Item>}
             />
           </Body>
           <Divider style={{ margin: 0 }} />
@@ -204,9 +198,7 @@ class Sidebar extends PureComponent {
                   ],
                 },
               ]}
-              renderItem={item => (
-                <List.Item actions={item.action}>{item.title}</List.Item>
-              )}
+              renderItem={item => <List.Item actions={item.action}>{item.title}</List.Item>}
             />
           </Body>
         </div>
